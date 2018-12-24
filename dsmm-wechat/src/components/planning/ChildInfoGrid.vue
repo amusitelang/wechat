@@ -11,13 +11,14 @@
             {{parseBirthday(birthday)}}
           </span>
         </div>
-        <div style="margin-left: .7rem;margin-top: .2rem" v-if="memo">
-          <span style="font-size: 12px;padding: .2rem;background: #E8E8E8;color: #999999;border-radius: 2px">
+        <div style="margin-left: .7rem;margin-top: .4rem">
+          <slot name="leave-content"></slot>
+          <!-- <span style="font-size: 12px;padding: .2rem;background: #E8E8E8;color: #999999;border-radius: 2px" v-if="memo">
             {{memo}}
           </span>
-          <!--<span style="font-size: 12px;padding: .2rem;background: #F5A626;color: #fff;border-radius: 2px">-->
-            <!--{{memo}}-->
-          <!--</span>-->
+          <span style="font-size: 12px;padding: .2rem;background: #F5A626;color: #fff;border-radius: 2px;vertical-align: center" v-if="reason">
+            {{reason}}
+          </span> -->
         </div>
       </div>
     </div>
@@ -65,6 +66,7 @@
       gender: Number,
       photo: String,
       memo: String,
+      reason: String,
     },
     components: {
       DwPhoto,

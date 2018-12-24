@@ -45,8 +45,10 @@
           this.childId = this.selectedChildId;
         } else if (this.$route.query.childId) {
           this.childId = this.$route.query.childId;
-        } else {
+        } else if (this.content.child) {
           this.childId = this.content.child.id;
+        } else {
+          this.childId = '';
         }
         this.$router.push({
           path: '/day/structure/report',

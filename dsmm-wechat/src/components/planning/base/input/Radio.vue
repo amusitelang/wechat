@@ -3,11 +3,17 @@
   <div class="radio_box">
     <div v-if="title" class="radio_font" style="flex: 1;">{{title}}</div>
     <div style="display: flex;flex: 1;">
-      <div class="radio_content" @click="change(item)" v-for="(item, index) in options" :key="index">
+      <div v-if="typeof item === 'string'"  class="radio_content" @click="change(item)" v-for="(item, index) in options" :key="index">
         <div class="radio_select" :class="{radioSelect: selected === index}">
           <div v-if="selected === index" class="radio_selected"></div>
         </div>
         <div class="radio_font">{{item}}</div>
+      </div>
+      <div v-if="typeof item === 'object'" class="radio_content" @click="change(item)" v-for="(item, index) in options" :key="index">
+        <div class="radio_select" :class="{radioSelect: selected === index}">
+          <div v-if="selected === index" class="radio_selected"></div>
+        </div>
+        <div class="radio_font">{{item.label}}</div>
       </div>
     </div>
   </div>
@@ -19,7 +25,7 @@
    * @module components/planning/base/input/Radio
    * @desc 单选框
    * @param {string} [title=] - 标题，接受 string
-   * @param {array} [options] - 参值[数组类型] 状态对应数组（{ 状态码：文案 }）
+   * @param {array} [options] - 参值[数组类型] 状态对应数组（{ 状态码：文案 }）当传递对象时传递形式为[{label: '', type: ''},{label: '', type: ''}]
    * @param {value} [v-model] -
    *
    * @example
@@ -44,14 +50,25 @@
     },
     methods: {
       change(item) {
-        this.options.forEach((option, index) => {
-          if (item === option) {
-            this.selected = index;
-          }
-        });
-        this.valueIndex = item;
-        this.$emit('input', item);
-        this.$emit('change', item);
+        if (typeof item === 'string') {
+          this.options.forEach((option, index) => {
+            if (item === option) {
+              this.selected = index;
+            }
+          });
+          this.valueIndex = item;
+          this.$emit('input', item);
+          this.$emit('change', item);
+        } else if (typeof item === 'object') {
+          this.options.forEach((option, index) => {
+            if (item.label === option.label) {
+              this.selected = index;
+            }
+          });
+          this.valueIndex = item.label;
+          this.$emit('input', item.label);
+          this.$emit('change', item.label);
+        }
       },
     },
     created() {

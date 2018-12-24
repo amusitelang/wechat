@@ -5,10 +5,10 @@
         <teacher-info style="width: 240px" :name="teacher.name" :phone="teacher.phone" :staffType="teacher.staffType.name" :photo="teacher.photo"></teacher-info>
       </div>
       <div class="card-cell">
-        <teacher-info style="width: 180px" name="总部监督电话" :phone="18616665554" type="监督"></teacher-info>
+        <teacher-info style="width: 180px" name="总部监督电话" phone="021-50776581" type="监督"></teacher-info>
       </div>
       <div class="card-cell">
-        <teacher-info style="width: 180px" name="总部客服中心" :phone="4000886565" type="客服"></teacher-info>
+        <teacher-info style="width: 180px" name="总部客服中心" phone="400-0886-565" type="客服"></teacher-info>
       </div>
     </div>
   </div>

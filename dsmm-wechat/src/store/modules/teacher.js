@@ -285,6 +285,16 @@ const teacher = {
         });
       });
     },
+    // 请假
+    postLeave({ state }, data) {
+      return new Promise((resolve, reject) => {
+        api.postLeave(data).then((res) => {
+          resolve(res);
+        }).catch((err) => {
+          reject(err);
+        });
+      });
+    },
   },
 };
 

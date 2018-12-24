@@ -94,7 +94,7 @@
           {
             icon: 'icon-dayCheck',
             color: '#1db562',
-            name: '入园晨检',
+            name: '入园检查',
             selectIcon: true,
             link: '/teacher/sendList?type=1',
             checkedCount: 0,
@@ -209,7 +209,7 @@
           {
             icon: 'icon-interactive',
             color: '#EC6066',
-            name: '互动率',
+            name: '袋鼠圈发布量',
             link: '/teacher/statistical/list',
             isJump: true,
             examined: true,
@@ -264,7 +264,6 @@
       ...mapActions({
         getTokenTeacherInfo: 'teacher/getTokenTeacherInfo',
         getTokenClassInfoList: 'teacher/getTokenClassInfoList',
-        // getClassReadingChildList: 'teacher/getClassReadingChildList',
         getTodayReportCount: 'teacher/getTodayReportCount',
         getTodaySchedule: 'teacher/getTodaySchedule',
         refreshToken: 'refreshToken',
@@ -314,8 +313,6 @@
           this.workbench[4].studentCount = res.obj.leave.studentCount;
           this.workbench[3].examined = this.workbench[3].checkedCount !== this.workbench[3].studentCount;
         });
-        // 获取学员名单
-        // this.getClassReadingChildList();
         // 获取今日午餐和每日课程
         this.getTodaySchedule().then((res) => {
           this.todayLesson = res.obj.todayLesson;

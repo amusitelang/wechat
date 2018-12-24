@@ -3,7 +3,7 @@
     <div class="card" v-if="classReadingChildList.length !== 0">
       <div class="card-cell color-info">
         <div v-if="type === '1'">
-          入园晨检信息列表
+          入园检查信息列表
         </div>
         <div v-else-if="type === '2'">
           午睡信息列表
@@ -24,27 +24,38 @@
       <div class="card-cell" v-for="(item,index) in classReadingChildList" :key="index">
         <el-row type="flex" justify="space-between" align="middle">
           <el-col :span="12">
-            <!--<child-info :name="item.child.name" :photo="item.child.photo" :gender="item.child.gender" :birthday="item.child.birthday"></child-info>-->
-            <DwChildInfo :name="item.child.name" :gender="item.child.gender" :birthday="item.child.birthday" memo="5:30PM前记录">
+            <DwChildInfo  v-if="checkedStudentIds.indexOf(item.child.id) < 0 || type === '6'" :name="item.child.name" :gender="item.child.gender" :birthday="item.child.birthday">
               <div slot="avatar" style="width: 34px;height: 34px;">
                 <img :src="item.child.photo" alt="" v-if="item.child.photo" style="width: 100%;height: 100%">
                 <img src="../../../assets/img/img/avatar/defaultAvatar.png" alt="" v-if="!item.child.photo" style="width: 100%;height: 100%">
               </div>
+              <div slot="leave-content">
+                <dw-label v-if="type !== '6'" class="leave-info-list" type="background" :content="leaveInfo" v-for="(leaveInfo, line) in item.child.leaveInfoList" :key="line"></dw-label>
+              </div>
+            </DwChildInfo>
+            <DwChildInfo  v-else :name="item.child.name" :gender="item.child.gender" :birthday="item.child.birthday">
+              <div slot="avatar" style="width: 34px;height: 34px;">
+                <img :src="item.child.photo" alt="" v-if="item.child.photo" style="width: 100%;height: 100%">
+                <img src="../../../assets/img/img/avatar/defaultAvatar.png" alt="" v-if="!item.child.photo" style="width: 100%;height: 100%">
+              </div>
+              <div slot="leave-content">
+                <dw-label v-if="type !== '6'" class="leave-info-list" type="background" :content="leaveInfo" v-for="(leaveInfo, line) in item.child.leaveInfoList" :key="line"></dw-label>
+              </div>
             </DwChildInfo>
           </el-col>
           <el-col style="text-align: right" :span="12">
-            <div class="button-list"  @click="amend(item, type)" v-if="type === '1' || (type === '5' && checkedStudentIds.indexOf(item.child.id) < 0)">
+            <div class="button-list"  @click="amend(item, type)" v-if="type === '1' || type === '5'">
               <span v-if="type === '1'">
                 请假
               </span>
               <span v-else-if="type === '5'">
-                早/晚接
+                晚接送
               </span>
             </div>
             <div class="button-list-background" v-if="checkedStudentIds.indexOf(item.child.id) < 0 || type === '6'" @click="sendDetail(item)">
               <i class="iconfont icon-add" style="line-height: normal;font-size: 12px;"></i>
               <span v-if="type === '1'">
-                晨检
+                检查
               </span>
               <span v-else-if="type === '2'">
                 午睡
@@ -63,10 +74,16 @@
               </span>
             </div>
             <div v-else-if="checkedStudentIds.indexOf(item.child.id) >= 0 && type !== '6' && type !== '2'" class="button-inline-list-background">
-              已添加
+              已录入
             </div>
-            <div style="flex: 1" v-else-if="checkedStudentIds.indexOf(item.child.id) >= 0 && type !== '6' && type === '2'" class="button-list">
+            <div style="flex: 1" v-else-if="checkedStudentIds.indexOf(item.child.id) >= 0 && type !== '6' && type === '2'" class="button-list" @click="sendDetail(item)">
               修改午睡
+            </div>
+            <div style="width:100%;margin-top: 10px">
+              <dw-label description="录入时间：" :content="item.child.sendTime" type="green" v-if="item.child.sendTime && type !== '6'"></dw-label>
+              <dw-label description="不做考核" type="orange" v-if="item.child.labels.length !== 0 && !item.child.sendTime && item.child.decide && type !== '6'"></dw-label>
+              <dw-label description="应录入时间：" type="gray" :content="item.child.timelyTimeTwo" v-if="item.child.labels.length === 0 && !item.child.sendTime && type !== '5' && type !== '6'"></dw-label>
+              <dw-label description="应录入时间：" type="gray" :content="item.child.timelyTimeTwo" v-if="!item.child.decide && !item.child.sendTime && type === '5' && type !== '6'"></dw-label>
             </div>
           </el-col>
         </el-row>
@@ -74,13 +91,18 @@
     </div>
     <blank v-if="classReadingChildList.length === 0" text="目前本班级没有在读学员哦~">
     </blank>
-    <dw-dialog v-model="openSummaryPopup" v-on:confirm="confirm" widthPercent="70%">
+    <dw-dialog v-model="openSummaryPopup" v-on:confirm="confirm" widthPercent="70%" v-bind:type="true">
+      <div slot="popup-header">
+        <span>晚接送记录</span>
+      </div>
       <div slot="popup-content">
-        <div style="margin-bottom: 10px">早接/晚接接送记录</div>
-        <textarea rows="5" placeholder="请填写接送备注" v-model="modifySummary.memo"></textarea>
+        <textarea rows="5" placeholder="请填写晚接送原因" v-model="modifySummary.memo"></textarea>
       </div>
     </dw-dialog>
-    <dw-dialog v-model="openCheckPopup" v-on:confirm="confirmCheck" widthPercent="70%">
+    <dw-dialog v-model="openCheckPopup" v-on:confirm="confirmCheck" widthPercent="70%" v-bind:type="true">
+      <div slot="popup-header">
+        <span>请假记录</span>
+      </div>
       <div slot="popup-content">
         <dw-radio v-model="modifyCheck.selected" :options="modifyCheck.selectArray" style="margin-bottom: 10px"></dw-radio>
         <textarea rows="5" placeholder="请填写请假原因" v-model="modifyCheck.memo"></textarea>
@@ -95,12 +117,23 @@
   import DwChildInfo from '../../../components/planning/ChildInfoGrid';
   import DwDialog from '../../../components/planning/base/layout/Dialog';
   import DwRadio from '../../../components/planning/base/input/Radio';
-  import moment from 'moment';
+  import rule from '../../../config/validate';
+  import onValidate from '../../../utils/validate';
+  // 文案
+  import { LEAVEINFOLIST } from '../../../config/constant';
+  // 标签组件
+  import DwLabel from '../../../components/planning/base/layout/Label';
+
+  const { memo } = rule;
+  const ruleObj = {
+    memo,
+  };
 
   export default {
     name: 'DayCheckList',
     data() {
       return {
+        let: '123',
         type: '',
         checkedStudentIds: [],
         openSummaryPopup: false,
@@ -114,8 +147,10 @@
           memo: '',
           value: '',
           selected: '',
-          selectArray: ['今日请假', '晚到'],
+          type: 0,
+          selectArray: [{ label: '今日请假', type: 1 }, { label: '晚到', type: 2 }],
         },
+        classReadingChildList: [],
       };
     },
     components: {
@@ -124,11 +159,12 @@
       DwChildInfo,
       DwDialog,
       DwRadio,
+      DwLabel,
     },
     computed: {
       ...mapState({
         teacherSelectedClassId: state => state.teacher.teacherSelectedClassId,
-        classReadingChildList: state => state.teacher.classReadingChildList,
+        // classReadingChildList: state => state.teacher.classReadingChildList,
       }),
     },
     methods: {
@@ -136,9 +172,9 @@
         getTodayReportedChildList: 'teacher/getTodayReportedChildList',
         getTeacherSelectedChildInfo: 'teacher/getTeacherSelectedChildInfo',
         getClassReadingChildList: 'teacher/getClassReadingChildList',
+        postLeave: 'teacher/postLeave',
       }),
       amend(item, index) {
-        console.log(item);
         if (index === '5') {
           this.openSummaryPopup = true;
           this.modifySummary.childId = item.child.id;
@@ -148,16 +184,42 @@
         }
       },
       confirm() {
-        console.log(this.modifySummary.childId);
-        console.log(this.modifySummary.memo);
-        console.log(moment().format('YYYY-MM-DD HH:mm:ss'));
         console.log('日总结时临时早晚接提交事件');
+        const list = Object.keys(ruleObj).map(item => onValidate(this.modifySummary[item], ruleObj[item]))
+          .filter(item => !item.valid);
+        if (list.length > 0) {
+          this.$toast(list[0].errorMessage);
+          return;
+        }
+        this.postLeave({
+          childId: this.modifySummary.childId,
+          memo: this.modifySummary.memo,
+          type: 4,
+        }).then((res) => {
+          this.modifySummary.memo = '';
+          this.classChildList();
+        });
       },
       confirmCheck() {
-        console.log(this.modifyCheck.childId);
-        console.log(this.modifyCheck.selected);
-        console.log(moment().format('YYYY-MM-DD HH:mm:ss'));
+        this.modifyCheck.selectArray.forEach((item) => {
+          if (this.modifyCheck.selected === item.label) {
+            this.modifyCheck.type = item.type;
+          }
+        });
+        const list = Object.keys(ruleObj).map(item => onValidate(this.modifyCheck[item], ruleObj[item]))
+          .filter(item => !item.valid);
+        if (list.length > 0) {
+          this.$toast(list[0].errorMessage);
+          return;
+        }
         console.log('晨检请假提交事件');
+        this.postLeave({
+          childId: this.modifyCheck.childId,
+          memo: this.modifyCheck.memo,
+          type: this.modifyCheck.type,
+        }).then((res) => {
+          this.classChildList();
+        });
       },
       sendDetail(item) {
         // 请求孩子详情并存入store，供后面页面直接使用
@@ -209,19 +271,39 @@
           });
         });
       },
-      // 微信链接js-sdk中的分享页面
-      wxPreview() {
-      },
-      init() {
-        this.wxPreview();
-        this.type = this.$route.query.type;
-        this.getStudentCheckList();
+      // 获取学员列表
+      classChildList() {
         this.getClassReadingChildList({
           classId: this.teacherSelectedClassId,
           type: this.type,
         }).then((res) => {
-          console.log(res);
+          res.obj.forEach((item) => {
+            if (item.child) {
+              const r1 = [];
+              LEAVEINFOLIST.forEach((leave) => {
+                item.child.labels.forEach((label) => {
+                  if (label === leave.type) {
+                    r1.push(leave.label);
+                    item.child.leaveInfoList = r1;
+                  }
+                });
+              });
+              item.child.labels.forEach((index) => {
+                item.child.decide = !(index === 2 && this.type.toString() === '5');
+                return item.child.decide;
+              });
+              if (item.child.timelyTime) {
+                item.child.timelyTimeTwo = `${item.child.timelyTime}前`;
+              }
+            }
+          });
+          this.classReadingChildList = res.obj;
         });
+      },
+      init() {
+        this.type = this.$route.query.type;
+        this.classChildList();
+        this.getStudentCheckList();
       },
     },
     created() {
@@ -231,6 +313,7 @@
 </script>
 <style scoped lang="less">
   @import '../../../assets/css/global';
+  @import '../../../components/planning/vars';
   .button-list{
     display: inline-block;
     border-radius: 0.25rem;
@@ -274,7 +357,7 @@
     font-weight: lighter;
     background: #E8E8E8;
     border: 1px solid #E8E8E8;
-    color: @color-text-grey;
+    color: @font_color;
     font-size: 12px;
   }
   textarea{
@@ -285,6 +368,12 @@
     border-radius: 5px;
     border-color: #cccccc;
     box-sizing: border-box;
+  }
+  .leave-info-list{
+    margin-right: 6px;
+  }
+  .leave-info-list:last-of-type{
+    margin-right: 0;
   }
 </style>
 

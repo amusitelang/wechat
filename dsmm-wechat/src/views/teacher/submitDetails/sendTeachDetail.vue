@@ -2,7 +2,7 @@
   <div>
     <!--新版本-->
     <div class="card" style="padding-top: .7rem;padding-bottom: .7rem;margin-bottom: 1rem;color: #d9d9d9;">{{todayTime}}</div>
-    <div class="card">
+    <div class="card" style="margin-bottom: 0">
       <div class="layout-teach">
         <img src="../../../assets/img/icon/sendDetailComponents/teacher_teach_logo.png" alt="">
         <div>课程</div>

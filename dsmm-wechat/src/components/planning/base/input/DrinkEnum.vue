@@ -3,7 +3,7 @@
 <template>
   <div class="card">
     <div class="layout-head">饮水情况</div>
-    <dw-card style="padding: 0 14px;;margin: 0;">
+    <dw-card class="dw-card">
       <div slot="card-content" style="display: flex">
         <div @click="selected(0)" style="flex: 1;text-align: center">
           <i class="iconfont icon-less icon-icon" :class="{changeColor: expression === 0}"></i>
@@ -83,6 +83,10 @@
 </script>
 <style lang="less" scoped>
   @import "../../vars";
+  .dw-card{
+    padding: 0 14px;
+    margin: 0;
+  }
   .layout-head {
     padding: 1rem 0;
     text-align: center;

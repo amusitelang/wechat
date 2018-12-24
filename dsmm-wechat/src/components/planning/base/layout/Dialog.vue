@@ -5,6 +5,9 @@
     v-model="popupVisible"
     :closeOnClickModal=false
     popup-transition="popup-fade" class="popup-box" @touchmove.prevent :lock-scroll="true" :style="{width: widthPercent}">
+    <div class="header" v-if="type">
+      <slot name="popup-header"></slot>
+    </div>
     <div class="layout-popup-slot">
       <slot name="popup-content"></slot>
     </div>
@@ -46,6 +49,10 @@
     props: {
       value: Boolean,
       widthPercent: String,
+      type: {
+        type: Boolean,
+        default: false,
+      },
     },
     watch: {
       value(val) {
@@ -67,9 +74,20 @@
 </script>
 
 <style lang="less" scoped>
+  @import "../../vars";
   .popup-box{
     border-radius: .25rem;
     background: #fff;
+  }
+  .header{
+    width: 100%;
+    background: #f9f9f9;
+    color: #797979;
+    padding: 15px;
+    font-size: 16px;
+    box-sizing: border-box;
+    text-align: left;
+    border-radius: .25rem;
   }
   .layout-button-box{
     margin: 0 1rem 1rem;

@@ -19,19 +19,19 @@
         </div>
       </div>
       <div class="border-r layout-small">
-        <div>及时率量/率</div>
-        <div>
-          <span>{{statisticalInfo.interactCount}}</span>
-          <span>条</span>
-          <span class="percentage">{{(statisticalInfo.interactPercent * 100).toFixed(2)}}%</span>
-        </div>
-      </div>
-      <div class="layout-small">
-        <div>互动率量/率</div>
+        <div>及时量/率</div>
         <div>
           <span>{{statisticalInfo.timelyCount}}</span>
           <span>条</span>
           <span class="percentage">{{(statisticalInfo.timelyPercent * 100).toFixed(2)}}%</span>
+        </div>
+      </div>
+      <div class="layout-small">
+        <div>互动量/率</div>
+        <div>
+          <span>{{statisticalInfo.interactCount}}</span>
+          <span>条</span>
+          <span class="percentage">{{(statisticalInfo.interactPercent * 100).toFixed(2)}}%</span>
         </div>
       </div>
     </div>

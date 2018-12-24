@@ -35,7 +35,7 @@
     popup-transition="popup-fade" style="border-radius: 5px;">
     <div class="changeName">
       <div>修改姓名</div>
-      <dw-input v-model="changedTeacherName" type-color="gray" type="inputText" style="margin-bottom: 20px"></dw-input>
+      <dw-input v-model="changedTeacherName" inputBackground="gray" type="inputText" style="margin-bottom: 20px"></dw-input>
       <dw-select-button v-on:cancel="cancel" v-on:success="define"></dw-select-button>
     </div>
   </mt-popup>
