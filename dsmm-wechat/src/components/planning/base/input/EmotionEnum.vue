@@ -73,8 +73,8 @@
   @import "../../vars";
   .layout-head{
     text-align: center;
-    padding: 1.5rem 0;
-    font-size: 16px;
+    padding: 10px 0 1rem;
+    font-size: 14px;
   }
   .layout-emition{
     display: flex;

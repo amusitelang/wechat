@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="feeFollowList.length !== 0">
-      <renewal-fee-child-info class="border-b" v-for="(item, index) in feeFollowList" :key="index" v-bind:childInfo="item" v-bind:isJump="true"></renewal-fee-child-info>
+      <renewal-fee-child-info class="border-b leabel" v-for="(item, index) in feeFollowList" :key="index" v-bind:childInfo="item" v-bind:isJump="true"></renewal-fee-child-info>
     </div>
     <blank v-else-if="feeFollowList.length === 0" text="目前本班级没有在读学员哦~"></blank>
   </div>
@@ -51,4 +51,7 @@
   };
 </script>
 <style lang="less" scoped>
+  .leabel:last-of-type{
+    border: 0;
+  }
 </style>

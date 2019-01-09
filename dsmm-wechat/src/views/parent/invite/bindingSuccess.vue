@@ -30,9 +30,6 @@
       },
       init() {
         this.type = this.$route.query.type;
-        // setTimeout(() => {
-        //   this.$router.push('/parent/index');
-        // }, 3000);
       },
     },
     created() {

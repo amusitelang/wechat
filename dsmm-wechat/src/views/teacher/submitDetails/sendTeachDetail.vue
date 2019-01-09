@@ -8,32 +8,36 @@
         <div>课程</div>
       </div>
     </div>
-    <div class="card border-b layout-teachTime"  @click="openTeach">
-      <div style="float:left;">{{teachTime}}</div>
-      <div style="float:right;overflow:hidden;">
-        <div style="float: left;color: #949494;margin-right: .3rem"><span>{{teachName}}</span></div>
-        <img src="../../../assets/img/icon/global/arrow-right.png" alt="">
+    <dw-row :borderBottom="true" :arrow="true" style="background: #fff;">
+      <div slot="rowContent">
+        <!--class="layout-teachTime"-->
+        <div @click="openTeach">
+          <div style="float:left;">{{teachTime}}</div>
+          <div style="float:right;overflow:hidden;">
+            <div style="color: #949494;"><span>{{teachName}}</span></div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="border-b layout-present" style="overflow:hidden;">
-      <div style="float:left;color: #333333;">课程内容:</div>
-      <div style="float: left;">《{{teachContent}}》</div>
-    </div>
+    </dw-row>
+    <dw-row :borderBottom="true" :arrow="false" style="background: #fff;">
+      <div slot="rowContent">
+        <div style="float:left;color: #333333;">课程内容:</div>
+        <div style="float: left;color:#a6a6a6;">《{{teachContent}}》</div>
+      </div>
+    </dw-row>
     <!--课程介绍-->
-    <div class="border-b layout-present">
-      {{teachPresent}}
-    </div>
+    <dw-row :borderBottom="true" :arrow="false" style="background: #fff;">
+      <div slot="rowContent">
+        <span style="color:#a6a6a6;">{{teachPresent}}</span>
+      </div>
+    </dw-row>
     <div class="card" style="margin: 0;overflow: hidden">
       <div style="margin: 1rem 0;display: flex;flex-wrap: wrap">
         <Thumbnail v-for="(image, index) in imageUrlList" :key="index" v-bind:image="image" v-bind:imageUrlList="imageUrlList"  v-on:deleteImage="deleteImage"></Thumbnail>
         <UploadPhotos v-if="imageUrlList.length <= 8"  v-on:uploaded="uploaded" style="float:left;"></UploadPhotos>
       </div>
-      <div class="card-cell">
-      <textarea rows="4" placeholder="可添加备注信息"
-                style="-webkit-appearance: none;appearance: none;width: 100%;outline: none;border-radius: 5px;padding: .5rem .5rem;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;resize:none"
-                v-model="memo" wrap="hard">
-
-      </textarea>
+      <div class="detail_memo">
+        <dw-input type-color="gray" v-model="memo" type="multi"></dw-input>
       </div>
     </div>
     <div class="button-block_primary" @click="sureSubmit">
@@ -48,41 +52,14 @@
       <mt-picker v-if="lessonList" ref="teachPicker" :slots="slotsTeach" value-key="teachTypeName"></mt-picker>
     </mt-popup>
     <!--提交模态框-->
-    <mt-popup
-      v-model="popupSleep"
-      popup-transition="popup-fade" style="border-radius: 5px;" @touchmove.prevent>
-      <div class="card" style="width:22rem;border-radius: 5px;" @touchmove.prevent>
-        <div style="padding: 1rem 0 0;font-size: 16px;font-weight: bold">课程消息</div>
-        <div style="overflow: hidden;padding: 1rem 0 0;">
-          <div class="timeLeft" style="float: left;margin-right: 1rem">上课时间:</div>
-          <div class="color-warning"  style="float: left;">{{teachTime}}</div>
-        </div>
-        <div style="overflow: hidden;padding: 1rem 0 0;">
-          <div class="timeLeft" style="float: left;margin-right: 1rem">主&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;题:</div>
-          <div class="color-warning"  style="float: left;">{{teachName}}</div>
-        </div>
-        <div style="overflow: hidden;padding: 1rem 0 ;">
-          <div class="timeLeft" style="float: left;margin-right: 1rem">课程内容:</div>
-          <div class="color-warning"  style="float: left;">{{teachContent}}</div>
-        </div>
-        <div style="overflow: hidden;padding: 0 0 1rem;">
-          <div class="timeLeft" style="float: left;margin-right: 1rem">课程介绍:</div>
-          <div class="color-warning"  style="float: left;width: 16rem">{{teachPresent}}</div>
-        </div>
-        <div class="card-cell" style="display: flex;flex-wrap: wrap;">
-          <div style="width: 5.5rem;height: 5.5rem;margin: .2rem;overflow:hidden;"  v-for="(item, index) in imageUrlList" :key="index" >
-            <img :src="item" alt="" style="height: 5.5rem;">
-          </div>
-        </div>
-        <div style="padding: 1rem 0;font-size: 12px;">
-          确认后并发送宝宝圈信息
-        </div>
-        <div class="button-group">
-          <div class="button-return_submit" @click="error">返回修改</div>
-          <div class="button-sure_submit" @click="success" v-loading="loading">确认发送</div>
-        </div>
+    <dw-dialog v-model="popupSleep"  widthPercent="80%" v-on:confirm="success" :type="true" @touchmove.prevent>
+      <div slot="popup-header">
+        每日课程报告
       </div>
-    </mt-popup>
+      <div slot="popup-content">
+        <dw-popup-prompt :popup-info-list="popupInfo"></dw-popup-prompt>
+      </div>
+    </dw-dialog>
   </div>
 </template>
 <script>
@@ -91,6 +68,10 @@
   import Thumbnail from '../../../components/layout/Thumbnail';
   import { mapState, mapActions } from 'vuex';
   import moment from 'moment';
+  import DwDialog from '../../../components/planning/base/layout/Dialog';
+  import DwPopupPrompt from '../../../components/planning/base/layout/PopupPrompt';
+  import DwRow from '../../../components/planning/base/layout/Row';
+  import DwInput from '../../../components/planning/base/input/Input';
 
   export default {
     data() {
@@ -109,12 +90,67 @@
         deleteImageUrl: '',
         time: '',
         flag: true,
+        popupInfo: [
+          {
+            title: '上课时间',
+            content: '',
+            isIcon: false,
+            icon: '',
+            iconColor: '',
+            isImg: false,
+          },
+          {
+            title: '课程主题',
+            content: '',
+            isIcon: false,
+            icon: '',
+            iconColor: '',
+            isImg: false,
+          },
+          {
+            title: '课程内容',
+            content: '',
+            isIcon: false,
+            icon: '',
+            iconColor: '',
+            isImg: false,
+          },
+          {
+            title: '课程介绍',
+            content: '',
+            isIcon: false,
+            icon: '',
+            iconColor: '',
+            isImg: false,
+          },
+          {
+            title: '备注信息',
+            content: '',
+            isIcon: false,
+            icon: '',
+            iconColor: '',
+            isImg: false,
+          },
+          {
+            title: '',
+            content: '',
+            isIcon: false,
+            icon: '',
+            iconColor: '',
+            isImg: true,
+            imgUrl: [],
+          },
+        ],
       };
     },
     components: {
       Confirmation,
       UploadPhotos,
       Thumbnail,
+      DwDialog,
+      DwPopupPrompt,
+      DwRow,
+      DwInput,
     },
     computed: {
       ...mapState({
@@ -157,6 +193,12 @@
       // 提交
       sureSubmit() {
         this.popupSleep = true;
+        this.popupInfo[0].content = this.teachTime;
+        this.popupInfo[1].content = this.teachName;
+        this.popupInfo[2].content = this.teachContent;
+        this.popupInfo[3].content = this.teachPresent;
+        this.popupInfo[4].content = this.memo.replace(/\r\n/g, '\n').replace(/\n/g, '\n').replace(/\s/g, '\n');
+        this.popupInfo[5].imgUrl = this.imageUrlList;
       },
       error() {
         this.popupSleep = false;

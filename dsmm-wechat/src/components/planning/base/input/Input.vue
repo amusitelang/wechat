@@ -7,8 +7,8 @@
     <div class="boxBackground" :class="[inputBackground]" v-if="type === 'inputText'">
       <input type="text" v-model="valueInside">
     </div>
-    <div class="boxTextara" v-if="type === 'textarea'">
-      <textarea rows="8" v-model="valueInside"></textarea>
+    <div class="boxTextara" v-if="type === 'multi'">
+      <textarea rows="8" v-model="valueInside" wrap="hard"></textarea>
     </div>
   </div>
 </template>
@@ -24,9 +24,10 @@
    * @param {String} - 返回文本
    *
    * @example
-   * <dw-input type-color="gray" v-model="testValue" :multi="true"></dw-input>
+   * <dw-input type-color="gray" v-model="testValue" type="multi"></dw-input>
    */
   export default {
+    name: 'DwInput',
     data() {
       return {
         valueInside: '',
@@ -96,6 +97,7 @@
     padding: 10px;
     width: 100%;
     border-radius: 5px;
-    border-color: #cccccc;
+    border-color: #999999;
+    color: #999999;
   }
 </style>

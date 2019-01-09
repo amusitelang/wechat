@@ -6,10 +6,12 @@
       <confirmation v-on:confirm="confirmSelect" v-on:cancel="cancelSelect"></confirmation>
       <mt-picker ref="picker" :slots="slots" valueKey="name"></mt-picker>
     </mt-popup>
-    <div class="card">
-      <div class="card-cell_link">
+    <dw-row :borderBottom="true" :arrow="true" style="background: #fff;">
+      <div slot="rowContent">
         <div @click="selection"><span>{{feedbackTypeName}}</span><span v-if="!feedbackTypeName" class="color-info">请选择建议类型</span></div>
       </div>
+    </dw-row>
+    <div class="card" style="padding: 0 10px;">
       <div class="card-cell" style="border: 0;">
         <textarea rows="8" placeholder="请输入建议内容" style="display: block; width: 100%; padding: 0; border: 0;outline: none;resize: none;" v-model="editing.content"></textarea>
       </div>
@@ -49,6 +51,8 @@
   import Confirmation from '../../components/button/PopUpConfirmation';
   import UploadPhotos from '../../components/button/UploadPhotos';
   import DeletePhoto from '../../components/layout/Thumbnail';
+  // 新组件
+  import DwRow from '../../components/planning/base/layout/Row';
 
   export default {
     data() {
@@ -104,6 +108,7 @@
       Confirmation,
       UploadPhotos,
       DeletePhoto,
+      DwRow,
     },
     computed: {
       ...mapState({

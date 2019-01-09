@@ -1,9 +1,9 @@
 <template>
   <div>
     <!--登录卡片-通用入口-->
-    <div class="card" style="padding: 0 2rem; height: 100%">
-      <div style="padding-top: 2rem;">
-        <img src="../../../assets/img/icon/global/logo.png" style="display: block; width: 90%; margin: 2rem auto">
+    <div class="card card_invitation">
+      <div class="card_invitation_img">
+        <img src="../../../assets/img/icon/global/logo.png">
       </div>
       <input class="input_line" type="number" placeholder="输入邀请码" v-model="code">
       <span style="font-size: 12px;padding: .5rem 0;display: block;color: #F5A626;width: 9rem" class="color-info" @click="obtain">如何获取邀请码?</span>
@@ -150,5 +150,16 @@
   };
 </script>
 <style lang="less">
-
+.card_invitation {
+  padding: 0 2rem;
+  height: 100%;
+  .card_invitation_img{
+    padding-top: 2rem;
+    img{
+      display: block;
+      width: 90%;
+      margin: 2rem auto;
+    }
+  }
+}
 </style>

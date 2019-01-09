@@ -68,6 +68,13 @@
       <Confirmation v-on:confirm="confirmSelect" v-on:cancel="cancelSelect"></Confirmation>
       <mt-picker value-key="name" ref="pickered" :slots="slots" ></mt-picker>
     </mt-popup>
+    <!--<div style="width:200px;margin: 14px;">-->
+      <!--<dw-photo-layout :number='3' :spacing="5" v-if="testPhotoList.length !== 0">-->
+        <!--<template v-for='(item,index) in testPhotoList'>-->
+          <!--<dw-photo v-bind:image-url="item" :key="index" :image-list="testPhotoList"></dw-photo>-->
+        <!--</template>-->
+      <!--</dw-photo-layout>-->
+    <!--</div>-->
   </div>
 </template>
 <script>
@@ -79,6 +86,8 @@
   import SudokuContent from '../../components/layout/Content';
   import DwStoreAndClassReveal from '../../components/layout/base/StoreAndClass';
   import DwAvatarReveal from '../../components/layout/base/AvatarShow';
+  import DwPhotoLayout from '../../components/planning/base/photo';
+  import DwPhoto from '../../components/planning/base/layout/Photo';
 
   export default {
     data() {
@@ -90,6 +99,7 @@
         todayLunch: '',
         moveTouch: true,
         changeTouch: false,
+        testPhotoList: [],
         workbench: [
           {
             icon: 'icon-dayCheck',
@@ -340,6 +350,14 @@
                 });
                 this.getWeekLesson({ date: moment().format('YYYY-MM-DD') });
                 this.getSelectClassInfo();
+                this.testPhotoList = [
+                  'https://dsmm-test.oss-cn-hangzhou.aliyuncs.com/staff/28/1539331938430',
+                  'https://dsmm-test.oss-cn-hangzhou.aliyuncs.com/staff/28/1539331938430',
+                  'https://dsmm-test.oss-cn-hangzhou.aliyuncs.com/staff/28/1539331938430',
+                  'https://dsmm-test.oss-cn-hangzhou.aliyuncs.com/staff/28/1539331938430',
+                  'https://dsmm-test.oss-cn-hangzhou.aliyuncs.com/staff/28/1539331938430',
+                  'https://dsmm-test.oss-cn-hangzhou.aliyuncs.com/staff/28/1539331938430',
+                ];
               } else {
                 this.$router.replace('/teacher/noClass');
               }
@@ -356,6 +374,8 @@
       SudokuContent,
       DwStoreAndClassReveal,
       DwAvatarReveal,
+      DwPhotoLayout,
+      DwPhoto,
     },
     created() {
       this.init();

@@ -47,14 +47,6 @@
         <div class="card" style="font-size: 18px;color: #f5a626;text-align: center;margin: 0;">请完善您的信息</div>
         <div  class="layout" style="padding-top: 1rem;margin-bottom: 0rem">
           <el-input class="layout-lot" v-model="familyInfo.username" placeholder="* 您的姓名" style="border-color: #f5a626"></el-input>
-          <!--<el-select v-model="familyInfo.relationValue" placeholder="* 您是宝宝的?" style="width: 100%;">-->
-            <!--<el-option-->
-              <!--v-for="item in options"-->
-              <!--:key="item.value"-->
-              <!--:label="item.label"-->
-              <!--:value="item.value">-->
-            <!--</el-option>-->
-          <!--</el-select>-->
         </div>
         <div class="layout">
           <el-input v-model="familyInfo.childName" placeholder="* 宝宝昵称/姓名" class="layout-lot"></el-input>
@@ -128,9 +120,6 @@
         }, {
           value: '8',
           label: '株洲中心',
-        }, {
-          value: '10',
-          label: '博山中心',
         }, {
           value: '12',
           label: '军体中心',

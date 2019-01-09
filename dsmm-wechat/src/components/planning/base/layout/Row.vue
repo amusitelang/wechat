@@ -1,4 +1,3 @@
-<!--要用span封装-->
 <template>
   <div class="row" :class="{RowBorderBottom: borderBottom === true}">
     <div class="layout-row-content">

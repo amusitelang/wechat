@@ -5,62 +5,27 @@
     </div>
     <div class="card">
       <div>
-        <temperature class="card-cell" title="体温" v-on:temperature="listenToMyBoy" v-bind:saveInfo="dayCheckInfoList.items.bodyTemperature"></temperature>
-        <dw-emotion-enum class="card-cell" title="情绪状态" v-model="dayCheckInfoList.items.feeling"></dw-emotion-enum>
+        <temperature class="card-cell" title="体温" v-on:temperature="listenToMyBoy" v-bind:saveInfo="dayCheckInfoList.items.bodyTemperature" style="padding-top: 0;"></temperature>
+        <dw-emotion-enum class="card-cell" style="padding-top: 0;" title="情绪状态" v-model="dayCheckInfoList.items.feeling"></dw-emotion-enum>
         <div>
           <dw-radio title="手口情况" :options="checkInfo.headAndMouth"  v-model="dayCheckInfoList.items.headAndMouth" style="margin: 1rem 0"></dw-radio>
           <dw-radio title="肢体情况" :options="checkInfo.limbInfo"  v-model="dayCheckInfoList.items.bodyCondition" style="margin-bottom: 1rem"></dw-radio>
           <dw-radio title="指甲情况" :options="checkInfo.nailInfo"  v-model="dayCheckInfoList.items.nail" style="margin-bottom: 1rem"></dw-radio>
         </div>
-        <div class="memo">
-          <textarea rows="4" placeholder="可添加备注信息"
-                    style="-webkit-appearance: none;appearance: none;width: 100%;outline: none;border-radius: 5px;padding: .8rem .6rem;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;resize:none"
-                    v-model="dayCheckInfoList.memo"  wrap="hard"></textarea>
+        <div class="memo detail_memo">
+          <dw-input type-color="gray" v-model="dayCheckInfoList.memo" type="multi"></dw-input>
         </div>
       </div>
     </div>
     <div  class="button-block_primary" @click="sureSubmit">
       提交
     </div>
-    <dw-dialog v-model="popupVisible"  widthPercent="70%" v-on:confirm="success">
+    <dw-dialog v-model="popupVisible"  widthPercent="80%" v-on:confirm="success" :type="true" @touchmove.prevent>
+      <div slot="popup-header">
+        入园检查报告
+      </div>
       <div slot="popup-content">
-        <div style="padding: .8rem 0 1rem;">{{teacherSelectedChildInfo.name}}</div>
-        <div class="border-b" style="padding-bottom: 1rem">
-          <div style="padding: 5px 0;">
-            <span>入校时间:</span>
-            <span class="color-warning">{{dayTime}}</span>
-          </div>
-          <div style="padding: 5px 0;">
-            <span>体&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;温:</span>
-            <span class="color-warning">{{dayCheckInfoList.items.bodyTemperature}}</span>
-          </div>
-          <div style="padding: 5px 0;">
-            <span>情绪状态:</span>
-            <i class="iconfont" :class="eventInfo.moodIcon" :style="{color: `${eventInfo.moodIconColor}`}"></i>
-            <span style="color: #E6A23C;">{{dayCheckInfoList.items.feeling}}</span>
-          </div>
-          <div style="padding: 5px 0;">
-            <span>手口情况:</span>
-            <span class="color-warning">{{dayCheckInfoList.items.headAndMouth}}</span>
-          </div>
-          <div style="padding: 5px 0;">
-            <span>肢体擦伤:</span>
-            <span class="color-warning">{{dayCheckInfoList.items.bodyCondition}}</span>
-          </div>
-          <div style="padding: 5px 0;">
-            <span>指甲情况:</span>
-            <span class="color-warning">{{dayCheckInfoList.items.nail}}</span>
-          </div>
-          <div style="overflow: hidden;padding: .5rem 0 0;">
-            <div class="timeLeft" style="float: left;margin-right: 1rem">备注信息:</div>
-            <div class="color-warning" style="float: left;">
-              {{dayCheckInfoList.memo}}
-            </div>
-          </div>
-        </div>
-        <div style="height:45px;line-height: 45px;font-size: 12px;color: #484848;">
-          确认后并发送宝宝圈信息
-        </div>
+        <dw-popup-prompt :popupInfoList="popupInfo"></dw-popup-prompt>
       </div>
     </dw-dialog>
   </div>
@@ -70,9 +35,6 @@
   import ChildInfo from '../../../components/layout/ChildInfo';
   import moment from 'moment';
   import { mapActions, mapState } from 'vuex';
-  // 新的组件
-  import SelectEmotion from '../../../components/report/newReportDetailComponents/SelectEmotion';
-  import SelectCheckInfo from '../../../components/report/newReportDetailComponents/SelectCheckInfo';
   // 全局定义的文案
   import constant from '../../../config/constant';
   // 重构组件
@@ -80,6 +42,8 @@
   import DwEmotionEnum from '../../../components/planning/base/input/EmotionEnum';
   import DwTemperature from '../../../components/planning/base/input/Temperature';
   import DwDialog from '../../../components/planning/base/layout/Dialog';
+  import DwPopupPrompt from '../../../components/planning/base/layout/PopupPrompt';
+  import DwInput from '../../../components/planning/base/input/Input';
 
   export default {
     data() {
@@ -106,6 +70,63 @@
           moodIcon: '',
           moodIconColor: '',
         },
+        popupInfo: [
+          {
+            title: '入园时间',
+            content: '2018-01-02',
+            isIcon: false,
+            icon: '',
+            iconColor: '',
+            isImg: false,
+          },
+          {
+            title: '入园体温',
+            content: '',
+            isIcon: false,
+            icon: '',
+            iconColor: '',
+            isImg: false,
+          },
+          {
+            title: '情绪状态',
+            content: '',
+            isIcon: true,
+            icon: '',
+            iconColor: '',
+            isImg: false,
+          },
+          {
+            title: '手口情况',
+            content: '',
+            isIcon: false,
+            icon: '',
+            iconColor: '',
+            isImg: false,
+          },
+          {
+            title: '肢体擦伤',
+            content: '',
+            isIcon: false,
+            icon: '',
+            iconColor: '',
+            isImg: false,
+          },
+          {
+            title: '指甲情况',
+            content: '',
+            isIcon: false,
+            icon: '',
+            iconColor: '',
+            isImg: false,
+          },
+          {
+            title: '备注信息',
+            content: '',
+            isIcon: false,
+            icon: '',
+            iconColor: '',
+          },
+        ],
       };
     },
     mounted() {
@@ -167,12 +188,21 @@
           if (this.dayCheckInfoList.items.feeling === item.label) {
             this.eventInfo.moodIcon = item.icon;
             this.eventInfo.moodIconColor = item.color;
+            this.popupInfo[2].icon = item.icon;
+            this.popupInfo[2].iconColor = item.color;
           }
         });
         if (this.dayCheckInfoList.items.bodyTemperature === '' || this.dayCheckInfoList.items.headAndMouth === '' || this.dayCheckInfoList.items.bodyCondition === '' || this.dayCheckInfoList.items.feeling === '' || this.dayCheckInfoList.items.nail === '') {
           this.$toast('请完善页面相关信息');
         } else {
           this.popupVisible = true;
+          this.popupInfo[0].content = moment(new Date()).format('YYYY-MM-DD HH:mm');
+          this.popupInfo[1].content = this.dayCheckInfoList.items.bodyTemperature;
+          this.popupInfo[2].content = this.dayCheckInfoList.items.feeling;
+          this.popupInfo[3].content = this.dayCheckInfoList.items.headAndMouth;
+          this.popupInfo[4].content = this.dayCheckInfoList.items.bodyCondition;
+          this.popupInfo[5].content = this.dayCheckInfoList.items.nail;
+          this.popupInfo[6].content = this.dayCheckInfoList.memo.replace(/\r\n/g, '<br>').replace(/\n/g, '<br>').replace(/\s/g, ' ');
         }
       },
       getTime() {
@@ -198,12 +228,12 @@
     components: {
       Temperature,
       ChildInfo,
-      SelectEmotion,
-      SelectCheckInfo,
       DwRadio,
       DwEmotionEnum,
       DwTemperature,
       DwDialog,
+      DwPopupPrompt,
+      DwInput,
     },
   };
 </script>

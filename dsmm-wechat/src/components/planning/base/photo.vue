@@ -29,9 +29,9 @@
       </div>;
     },
     mounted() {
-      this.sideLength = `${(((this.$refs.box.offsetWidth - (((this.number - 1)) * this.spacing))) / this.number)}px`;
+      this.sideLength = `${(((Math.trunc(this.$refs.box.offsetWidth) - (((this.number - 1)) * this.spacing))) / this.number)}px`;
+      console.log(this.sideLength);
     },
-
   };
 </script>
 <style lang="less" scoped>

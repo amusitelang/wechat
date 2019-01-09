@@ -8,7 +8,7 @@
               <div style="padding: .9rem 0 .3rem;margin-top: 2px;line-height: normal">
                 <i class="iconfont icon-daishufuwu"></i>
               </div>
-              <div class="loginFont" style="padding: 0rem 0 .5rem;">袋鼠服务</div>
+              <div class="loginFont" style="padding: 0 0 .5rem;">袋鼠服务</div>
             </el-col>
             <el-col :span="12" @click.native="jumpRouting(`/reserve/inputInfo?childId=${selectedChildId}`)">
               <div style="padding: .9rem 0 .3rem;margin-top: 2px;line-height: normal">

@@ -154,7 +154,7 @@
             this.init();
           });
         } else {
-          this.$toast('名称未修改');
+          console.log('名称未修改');
         }
       },
       birthday(data) {

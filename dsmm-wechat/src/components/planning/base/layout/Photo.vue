@@ -1,11 +1,13 @@
 <!--不用再分装子组件-->
 <!--删除无用代码-->
-<!--大小属性设置不要重复[还没有做]-->
+<!--大小属性设置不要重复-->
 <!--提示框交互是否需要图片，甚至是否可以不要提示-->
 <template>
   <div class="l-box" :class="['l-box-'+size]">
-    <img v-if="type === 'fillet'" class="image-layout layout-img-two" v-lazy="imageUrl" :key="imageUrl" @click="wxPreview">
-    <img v-if="type === 'square'" class="image-layout layout-img-three"  v-lazy="imageUrl" :key="imageUrl" @click="wxPreview">
+    <img v-if="type === 'fillet' && isClick" class="image-layout layout-img-two" v-lazy="`${imageUrl}?x-oss-process=style/wechat-report`" :key="imageUrl" @click="wxPreview">
+    <img v-if="type === 'fillet' && !isClick" class="image-layout layout-img-two" v-lazy="`${imageUrl}?x-oss-process=style/wechat-report`" :key="imageUrl">
+    <img v-if="type === 'square' && isClick" class="image-layout layout-img-three"  v-lazy="`${imageUrl}?x-oss-process=style/wechat-report`" :key="imageUrl" @click="wxPreview">
+    <img v-if="type === 'square' && !isClick" class="image-layout layout-img-three"  v-lazy="`${imageUrl}?x-oss-process=style/wechat-report`" :key="imageUrl">
     <img class="layout-img-four image-layout" v-lazy="image" :key="image" v-if="imageUrl && type === 'circle'">
     <img class="layout-img-four image-layout" src="../../../../assets/img/img/avatar/teacher_default_avator.png" v-else-if="!imageUrl && type === 'circle'">
     <!--是否删除-->
@@ -23,6 +25,7 @@
 </template>
 <script>
   import DwDialog from './Dialog';
+  import { mapActions } from 'vuex';
   /**
    * DwPhotoLayout
    * @module components/planning/base/layout/photoInside/PhotoLayout
@@ -36,6 +39,15 @@
    * @example
    * <dw-photo-layout v-for="(item, index) in 图片url数组" v-bind:image-url="item" :key="index" :image-list="图片url数组" :is-delete="是否删除" v-on:deleteImage="删除传出的事件"></dw-photo-layout>
    * <dw-photo-layout v-bind:image-url="图片url" :is-delete="是否删除" v-on:deleteImage="删除传出的事件" size="大小" type="图片样式"></dw-photo-layout>
+   * 配合图片布局组件使用
+   * <!--<div style="margin: 14px;">-->
+   <!--<dw-photo-layout :number='3' :spacing="5">-->
+   <!--<template v-for='(item,index) in testPhotoList'>-->
+   <!--&lt;!&ndash;<DwSquare v-bind:image="item" :key="index" v-bind:image-url-list="testPhoto"></DwSquare>&ndash;&gt;-->
+   <!--<dw-photo v-bind:image-url="item" :key="index" :image-list="testPhotoList"></dw-photo>-->
+   <!--</template>-->
+   <!--</dw-photo-layout>-->
+   <!--</div>-->
    */
   export default {
     data() {
@@ -57,35 +69,47 @@
       },
       size: {
         type: String,
-        default: '', // 中medium 小small 大large
+        default: '', // 大large中medium小small miniLarge miniMedium超小mini
       },
-      // circleSize: {
-      //   type: String,
-      //   default: '', // 中medium 小small 大large
-      // },
+      isClick: {
+        type: Boolean,
+        default: true,
+      },
     },
     components: {
       DwDialog,
     },
     methods: {
+      ...mapActions({
+        getWxConfig: 'getWxConfig',
+      }),
       // 微信链接js-sdk中的查看缩略图
       wxPreview() {
-        console.log(this.imageUrl);
-        console.log(this.imageList);
-        wx.ready(() => {
-          wx.previewImage({
-            current: this.image, // 当前显示的图片的HTTP链接
-            urls: this.imageUrlList, // 需要预览的图片http链接列表
-            success(res) {
-              console.log('查看成功');
-            },
-            cancel(err) {
-              console.log(err);
-            },
-          });
+        // console.log(this.imageUrl);
+        const data = [];
+        // 为了防止之前的图片有http的图片
+        this.imageList.forEach((index) => {
+          data.push(`https://${index.slice(index.match('dsmm').index)}`.replace(/(^\s*)|(\s*$)/g, ''));
         });
-        wx.error((err) => {
-          console.log(err);
+        this.getWxConfig({
+          url: window.location.href,
+        }).then((res) => {
+          wx.config(res.obj);
+          wx.ready(() => {
+            wx.previewImage({
+              current: `https://${this.imageUrl.slice(this.imageUrl.match('dsmm').index)}`.replace(/(^\s*)|(\s*$)/g, ''), // 当前显示的图片的HTTP链接
+              urls: data, // 需要预览的图片http链接列表
+              success() {
+                console.log('查看成功');
+              },
+              cancel(err) {
+                console.log(err);
+              },
+            });
+          });
+          wx.error((err) => {
+            console.log(err);
+          });
         });
       },
       // 删除图片
@@ -112,17 +136,26 @@
   .l-box-large{
      width: 200px;
      height: 200px;
-     position: relative;
    }
   .l-box-medium{
     width: 100px;
     height: 100px;
-    position: relative;
   }
   .l-box-small{
-    width: 50px;
+    width: 80px;
     height: 50px;
-    position: relative;
+  }
+  .l-box-mini{
+    width: 34px;
+    height: 50px;
+  }
+  .l-box-miniLarge{
+    width: 70px;
+    height: 200px;
+  }
+  .l-box-miniMedium{
+    width: 50px;
+    height: 100px;
   }
   .imgDelete{
     font-size: 20px;

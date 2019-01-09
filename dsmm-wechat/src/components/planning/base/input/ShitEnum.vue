@@ -2,7 +2,7 @@
 <!--SELECTSHIT 多余-->
 <template>
   <div>
-    <div style="padding: 1rem 0;text-align: center">{{title}}</div>
+    <div style="padding: 10px 0 1rem;text-align: center">{{title}}</div>
     <div style="display: flex" class="card">
       <div style="flex: 1;text-align: center" @click="selected(0, shitInfo[0].label)">
         <i class="iconfont icon-success2 shit" :class="{yes: expression === 0}" style="font-size: 45px;line-height: normal;"></i>

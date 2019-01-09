@@ -31,22 +31,18 @@
         </div>
         <!--报告照片，视频-->
         <div>
-          <div v-if="report.photos && JSON.parse(report.photos).length !== 0" class="card" style="display: flex;flex-wrap: wrap;margin: .5rem 0">
-            <el-col :span="8" v-for="(item, index) in JSON.parse(report.photos)" :key="index">
-              <div style="width: 7.5rem;height: 7.5rem;margin: .3rem auto;"  @click="preview(item)">
-                <!--:style="{background: `url(${item}) no-repeat center`, width: '7.5rem', height: '7.5rem', margin: '.3rem auto', backgroundSize: 'cover'}"-->
-                <!--:src="item"-->
-                <img class="image-layout"  style="width: 100%;height: 100%;object-fit: cover" v-lazy="item" :key="item">
-              </div>
-            </el-col>
+          <div v-if="report.photos && JSON.parse(report.photos).length !== 0" style="margin: .5rem 18px;">
+            <dw-photo-layout :number='3' :spacing="10">
+              <template v-for="(item, index) in JSON.parse(report.photos)">
+                <!--<DwSquare v-bind:image="item" :key="index" v-bind:image-url-list="testPhoto"></DwSquare>-->
+                <dw-photo v-bind:image-url="item" :key="index" :image-list="JSON.parse(report.photos)" :is-click="true"></dw-photo>
+              </template>
+            </dw-photo-layout>
           </div>
           <div v-if="report.video" class="card" style="display: flex;flex-wrap: wrap;margin-top: 1rem">
             <el-col :span="24"  >
               <video-player class="video-player vjs-custom-skin" ref="videoPlayer" :playsinline="true" :options="playerOptions"></video-player>
             </el-col>
-            <!--<el-col :span="24">-->
-              <!--<play-video v-bind:videoUrl="report.video"></play-video>-->
-            <!--</el-col>-->
           </div>
         </div>
         <!--不同类型报告卡片-->
@@ -89,8 +85,8 @@
           </div>
           <!--点赞内容显示-->
           <div class="card" style="overflow: hidden;padding-bottom: .5rem;margin-bottom: 0">
-            <div v-if="(report.wechatReportLikeList ? report.wechatReportLikeList['length']  : 0) > 0" style="float: left;margin-top: .2rem;margin-right: .5rem;overflow: hidden">
-              <i class="iconfont icon-praise-alt" style="color: #F5A626;display: block;margin-top: -2px"></i>
+            <div v-if="(report.wechatReportLikeList ? report.wechatReportLikeList['length']  : 0) > 0" style="float: left;margin-right: .5rem;overflow: hidden">
+              <i class="iconfont icon-praise-alt" style="color: #F5A626;vertical-align: center"></i>
             </div>
             <div v-for="(parent, parentList) in report.wechatReportLikeList" :key="parentList" style="float:left;">
               <div v-if="parent.isDel === 0" style="margin-right: 5px;color: #4e7cb1;">{{parent.likeUsername}}</div>
@@ -139,6 +135,9 @@
   import DayLunchReportCard from './showDetailCard/DayLunchReportCard';
   import DayTeachReportCard from './showDetailCard/DayTeachReportCard';
   import DaySummaryReportCard from './showDetailCard/DaySummaryReportCard';
+  // 重构组件
+  import DwPhotoLayout from '../planning/base/photo';
+  import DwPhoto from '../planning/base/layout/Photo';
 
   export default {
     data() {
@@ -162,6 +161,8 @@
       'day-lunch': DayLunchReportCard,
       'day-teach': DayTeachReportCard,
       'day-summary': DaySummaryReportCard,
+      DwPhotoLayout,
+      DwPhoto,
     },
     props: ['report', 'childName', 'singleStudent'],
     computed: {
@@ -276,34 +277,36 @@
           this.openReplyInput = false;
         });
       },
-      // 微信预览图片接口
-      preview(item) {
-        const data = [];
-        JSON.parse(this.report.photos).forEach((index) => {
-          data.push(`https://${index.slice(index.match('dsmm').index)}`.replace(/(^\s*)|(\s*$)/g, ''));
-        });
-        this.getWxConfig({
-          url: window.location.href,
-        }).then((res) => {
-          wx.config(res.obj);
-          wx.ready(() => {
-            wx.previewImage({
-              current: `https://${item.slice(item.match('dsmm').index)}`.replace(/(^\s*)|(\s*$)/g, ''), // 当前显示的图片的HTTP链接
-              urls: data, // 需要预览的图片http链接列表
-              success(resolve) {
-                console.log('成功');
-                console.log(resolve);
-              },
-              cancel(err) {
-                console.log(`错误:${err}`);
-              },
-            });
-          });
-          wx.error((err) => {
-            console.log(`错误原因：->${err}->没有走ready`);
-          });
-        });
-      },
+      // // 微信预览图片接口
+      // preview(item) {
+      //   const data = [];
+      //   JSON.parse(this.report.photos).forEach((index) => {
+      //     console.log(index.slice(index.match('dsmm').index));
+      //     data.push(`https://${index.slice(index.match('dsmm').index)}`.replace(/(^\s*)|(\s*$)/g, ''));
+      //   });
+      //   console.log(data);
+      //   this.getWxConfig({
+      //     url: window.location.href,
+      //   }).then((res) => {
+      //     wx.config(res.obj);
+      //     wx.ready(() => {
+      //       wx.previewImage({
+      //         current: `https://${item.slice(item.match('dsmm').index)}`.replace(/(^\s*)|(\s*$)/g, ''), // 当前显示的图片的HTTP链接
+      //         urls: data, // 需要预览的图片http链接列表
+      //         success(resolve) {
+      //           console.log('成功');
+      //           console.log(resolve);
+      //         },
+      //         cancel(err) {
+      //           console.log(`错误:${err}`);
+      //         },
+      //       });
+      //     });
+      //     wx.error((err) => {
+      //       console.log(`错误原因：->${err}->没有走ready`);
+      //     });
+      //   });
+      // },
     },
     created() {
     },

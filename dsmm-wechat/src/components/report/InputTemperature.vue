@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="noModal">
-      <div style="padding: 1rem 0;text-align: center">{{title}}</div>
+      <div style="padding: 10px 0 1rem;text-align: center">{{title}}</div>
       <div class="card" style="display: flex;padding: 0 2rem;" @click="openKey">
         <div class="v-temperature" style="margin-left: .5rem;">{{temperatureGroup[0]}}</div>
         <div class="v-temperature" style="margin-left: .5rem;">{{temperatureGroup[1]}}</div>

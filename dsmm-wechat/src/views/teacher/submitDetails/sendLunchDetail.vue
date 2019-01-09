@@ -33,8 +33,9 @@
       <mt-picker ref="pickered" :slots="sloted" value-key="label"></mt-picker>
     </mt-popup>
     <div class="card">
-      <div class="card-cell" style="padding: 2rem 0;">
-        <div style="height: 4rem;margin-top: 2rem;display: flex;position: relative;" v-for="(item , index) in dayLunchInfoList.items.todayLunch" :key="index">
+      <div style="text-align: center;padding-top: 10px;">宝宝进食情况</div>
+      <div class="card-cell" style="padding-top: 0;overflow:hidden;">
+        <div class="slider"  v-for="(item , index) in dayLunchInfoList.items.todayLunch" :key="index">
           <div style="width: 2.5rem;height: 1.2rem;position: absolute;top: 2.8rem;left: 5rem;">没吃</div>
           <div style="width: 2.5rem;height: 1.2rem;position: absolute;top: 2.8rem;left: 40%;">1/3</div>
           <div style="width: 37px;height: 1.2rem;position: absolute;top: 2.8rem;left: 58%;">1/2</div>
@@ -57,45 +58,18 @@
       <Thumbnail v-for="(image, index) in dayLunchInfoList.photos" :key="index" v-bind:image="image" v-bind:imageUrlList="dayLunchInfoList.photos"  v-on:deleteImage="deleteImage"></Thumbnail>
       <UploadPhotos v-if="dayLunchInfoList.photos.length <= 8"  v-on:uploaded="uploaded" style="float:left;"></UploadPhotos>
     </div>
-    <div class="card" style="margin-top: 0">
-          <textarea rows="4" placeholder="可添加备注信息"
-                    style="-webkit-appearance: none;appearance: none;width: 100%;outline: none;border-radius: 5px;padding: .8rem .6rem;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;resize:none"
-                    v-model="dayLunchInfoList.memo"  wrap="hard"></textarea>
+    <div class="card detail_memo" style="margin: 0">
+      <dw-input type-color="gray" v-model="dayLunchInfoList.memo" type="multi"></dw-input>
     </div>
     <div  class="button-block_primary" @click="sureSubmit">
       提交
     </div>
-    <dw-dialog v-model="popVisible"  widthPercent="70%" v-on:confirm="success">
+    <dw-dialog v-model="popVisible"  widthPercent="80%" v-on:confirm="success" :type="true" @touchmove.prevent>
+      <div slot="popup-header">
+        午餐通知
+      </div>
       <div slot="popup-content">
-        <div style="padding: 1rem 0;">午餐消息</div>
-        <div class="border-b">
-          <div class="time" style="overflow: hidden;">
-            <div style="float: left;margin-right: 1rem">进餐时间:</div>
-            <div class="color-warning"  style="float: left">11:00-11:30</div>
-          </div>
-          <div class="time" style="overflow: hidden;">
-            <div style="float: left;margin-right: 1rem">进餐方式:</div>
-            <div class="color-warning"  style="float: left">{{dayLunchInfoList.items.modeValue ? dayLunchInfoList.items.modeValue : '独立进食'}}</div>
-          </div>
-          <div class="time" style="overflow: hidden;">
-            <div style="float: left;margin-right: 1rem">主&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;食:</div>
-            <div class="color-warning"  style="float: left">{{mainFood}}</div>
-          </div>
-          <div class="time" style="overflow: hidden;">
-            <div style="float: left;margin-right: 1rem">菜&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;汤:</div>
-            <div class="color-warning"  style="float: left;">
-              <div style="word-wrap:break-word;float:left;">{{dish}}</div>
-            </div>
-          </div>
-          <div v-if="dayLunchInfoList.photos.length !== 0" class="time" style="display: flex;flex-wrap: wrap;">
-            <div style="width: 5.5rem;height: 5.5rem;margin: .2rem;overflow:hidden;"  v-for="(item, index) in dayLunchInfoList.photos" :key="index" >
-              <img :src="item" alt="" style="height: 5.5rem;">
-            </div>
-          </div>
-        </div>
-        <div style="padding: 1rem 0;font-size: 12px;color: #484848;">
-          确认后并发送宝宝圈信息
-        </div>
+        <dw-popup-prompt :popup-info-list="popupInfo"></dw-popup-prompt>
       </div>
     </dw-dialog>
   </div>
@@ -110,6 +84,8 @@
   import constant from '../../../config/constant';
   // 新组件
   import DwDialog from '../../../components/planning/base/layout/Dialog';
+  import DwPopupPrompt from '../../../components/planning/base/layout/PopupPrompt';
+  import DwInput from '../../../components/planning/base/input/Input';
 
   export default {
     name: 'LunchList',
@@ -125,6 +101,57 @@
         imageUrlList: [],
         imageUrl: '',  // 图片url
         detailTime: '',
+        popupInfo: [
+          {
+            title: '进餐时间',
+            content: '',
+            isIcon: false,
+            icon: '',
+            iconColor: '',
+            isImg: false,
+          },
+          {
+            title: '进餐方式',
+            content: '',
+            isIcon: false,
+            icon: '',
+            iconColor: '',
+            isImg: false,
+          },
+          {
+            title: '今日主食',
+            content: '',
+            isIcon: false,
+            icon: '',
+            iconColor: '',
+            isImg: false,
+          },
+          {
+            title: '菜品例汤',
+            content: '',
+            isIcon: false,
+            icon: '',
+            iconColor: '',
+            isImg: false,
+          },
+          {
+            title: '备注信息',
+            content: '',
+            isIcon: false,
+            icon: '',
+            iconColor: '',
+            isImg: false,
+          },
+          {
+            title: '',
+            content: '',
+            isIcon: false,
+            icon: '',
+            iconColor: '',
+            isImg: true,
+            imgUrl: [],
+          },
+        ],
       };
     },
     computed: {
@@ -153,6 +180,8 @@
       Thumbnail,
       ChildInfo,
       DwDialog,
+      DwPopupPrompt,
+      DwInput,
     },
     created() {
       this.dayLunchInfoList.photos = [];
@@ -220,6 +249,12 @@
       //      提交
       sureSubmit() {
         this.popVisible = true;
+        this.popupInfo[0].content = '11:00-11:30'; // 进餐时间
+        this.popupInfo[1].content = this.dayLunchInfoList.items.modeValue ? this.dayLunchInfoList.items.modeValue : '独立进食'; // 进餐方式
+        this.popupInfo[2].content = this.mainFood; // 主食
+        this.popupInfo[3].content = this.dish; // 菜汤
+        this.popupInfo[4].content = this.dayLunchInfoList.memo.replace(/\r\n/g, '\n').replace(/\n/g, '\n').replace(/\s/g, '\n'); // 备注信息
+        this.popupInfo[5].imgUrl = this.dayLunchInfoList.photos; // 照片
       },
       clickToConfirm(value) {
         this.popVisible = value;
@@ -275,5 +310,14 @@
 <style lang="less" scoped>
   .time{
     padding: 5px 0;
+  }
+  .slider{
+    height: 4rem;
+    margin-top: 2rem;
+    display: flex;
+    position: relative;
+  }
+  .slider:first-of-type{
+    margin-top: 0;
   }
 </style>

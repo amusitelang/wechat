@@ -97,28 +97,6 @@
         </el-col>
         <el-col  :span="14">
           <div class="border-r font-size">
-            <div class="font-one">博山中心</div>
-            <div class="font-two">地址: 上海市 浦东新区 金杨地区 博山东路771号</div>
-          </div>
-        </el-col>
-        <el-col :span="5">
-          <a href="tel:021-58583919" style="display: block;text-decoration: none">
-            <div class="img-div" style="margin: 1rem 0 .7rem 2rem">
-              <img src="../../assets/img/icon/global/address_phone.png" alt="" style="width: 2rem;height: 2rem;margin-top: 1.2rem">
-            </div>
-          </a>
-        </el-col>
-      </div>
-    </el-row>
-    <el-row class="border-b" style="background: #ffffff">
-      <div class="card">
-        <el-col :span="5">
-          <div class="img-div">
-            <img src="../../assets/img/icon/global/address_photo.png" alt="">
-          </div>
-        </el-col>
-        <el-col  :span="14">
-          <div class="border-r font-size">
             <div class="font-one">株洲中心</div>
             <div class="font-two">地址: 上海市 虹口区 大宁地区 株洲路349号</div>
           </div>

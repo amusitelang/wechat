@@ -88,7 +88,7 @@
     margin: 0;
   }
   .layout-head {
-    padding: 1rem 0;
+    padding: 10px 0 1rem;
     text-align: center;
   }
   .layout-drink-info {

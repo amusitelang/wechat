@@ -3,7 +3,7 @@
       <div class="card border-b">
         <child-info style="padding: .5rem 0;" :name="teacherSelectedChildInfo.name" :img="teacherSelectedChildInfo.photo"></child-info>
       </div>
-      <div class="card card-cell" style="padding-bottom: 0;padding-top: 0;margin: 0 0 10px;">
+      <div class="card card-cell" style="padding-bottom: 0;padding-top: 0;margin: 0 0 10px;border: 0">
         <div style="display: flex;">
           <div style="flex: 1;display: flex" @click="modeSelect" class="new-card-cell">
             <div style="flex: 1;">&nbsp;&nbsp;&nbsp;&nbsp;入睡方式:</div>
@@ -46,59 +46,36 @@
         <confirmation v-on:confirm="confirmSelect" v-on:cancel="cancelSelect" @touchmove.prevent></confirmation>
         <mt-picker ref="pickered" :slots="sloted"></mt-picker>
       </mt-popup>
-
+      <!--<div style="margin: 14px;">-->
+        <!--<dw-photo-layout :number='3' :spacing="5" v-if="daySleepInfoList.photos.length !== 0">-->
+          <!--<template v-for='(item,index) in daySleepInfoList.photos'>-->
+            <!--<dw-photo v-bind:image-url="item" :key="index" :image-list="daySleepInfoList.photos"></dw-photo>-->
+          <!--</template>-->
+        <!--</dw-photo-layout>-->
+      <!--</div>-->
       <div class="card">
-        <Temperature class="card-cell"  title="室内温度" v-on:temperature="listenToMyBoy"  v-bind:saveInfo="daySleepInfoList.items.roomTemperature"></Temperature>
+        <Temperature class="card-cell" style="padding-top: 0;"  title="室内温度" v-on:temperature="listenToMyBoy"  v-bind:saveInfo="daySleepInfoList.items.roomTemperature"></Temperature>
         <div class="card-cell" style="border: 0">
           <div style="margin: 0;display: flex;flex-wrap: wrap">
             <Thumbnail v-for="(image, index) in daySleepInfoList.photos" :key="index" v-bind:image="image" v-bind:imageUrlList="daySleepInfoList.photos"  v-on:deleteImage="deleteImage"></Thumbnail>
             <UploadPhotos v-if="daySleepInfoList.photos.length <= 8" v-on:uploaded="uploaded" style="float:left;"></UploadPhotos>
           </div>
         </div>
-        <div class="card-cell">
-          <textarea rows="4" placeholder="可添加备注信息"
-                          style="-webkit-appearance: none;appearance: none;width: 100%;outline: none;border-radius: 5px;padding: .5rem .5rem;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;resize:none"
-                          v-model="daySleepInfoList.memo" wrap="hard">
-
-          </textarea>
+        <div class="detail_memo">
+          <dw-input type-color="gray" v-model="daySleepInfoList.memo" type="multi"></dw-input>
         </div>
     </div>
     <div  class="button-block_primary" @click="sureSubmit">
       提交
     </div>
-      <mt-popup
-        v-model="popupSleep"
-        popup-transition="popup-fade" style="border-radius: 5px"  @touchmove.prevent>
-        <div class="card" style="width:18rem;border-radius: 5px">
-          <div style="padding: 1rem 0;font-size: 18px;">入睡消息</div>
-          <div class="time" style="padding: .5rem 0;overflow:hidden;">
-            <div style="float: left;margin-right: 1rem">入睡时间:</div>
-            <div class="color-warning" style="float: left;">{{daySleepInfoList.items.napTime ? this.daySleepInfoList.items.napTime : '11:30'}}</div>
-          </div>
-          <div class="time" style="padding: .5rem 0;overflow:hidden;">
-            <div style="float: left;margin-right: 1rem">入睡方式:</div>
-            <div class="color-warning" style="float: left;">{{daySleepInfoList.items.modeValue ? this.daySleepInfoList.items.modeValue : '独立入睡'}}</div>
-          </div>
-          <div class="time" style="padding: .5rem 0;overflow:hidden;">
-            <div style="float: left;margin-right: 1rem">温&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;度:</div>
-            <div class="color-warning" style="float: left;">
-              {{daySleepInfoList.items.roomTemperature}}
-            </div>
-          </div>
-          <div class="card-cell" style="display: flex;flex-wrap: wrap;">
-            <div style="width: 5.5rem;height: 5.5rem;margin: .2rem;overflow:hidden;"  v-for="(item, index) in daySleepInfoList.photos" :key="index" >
-              <img :src="item" alt="" style="height: 5.5rem;">
-            </div>
-          </div>
-          <div style="padding: 1rem 0;font-size: 12px;color: #484848;">
-            确认后并发送宝宝圈信息
-          </div>
-          <div class="button-group">
-            <div class="button-return_submit" @click="error">返回修改</div>
-            <div class="button-sure_submit" @click="success" v-loading="loading">确认发送</div>
-          </div>
-        </div>
-      </mt-popup>
+    <dw-dialog v-model="popupSleep"  widthPercent="80%" v-on:confirm="success" :type="true" @touchmove.prevent>
+       <div slot="popup-header">
+         午睡消息
+       </div>
+       <div slot="popup-content">
+         <dw-popup-prompt :popup-info-list="popupInfo"></dw-popup-prompt>
+       </div>
+    </dw-dialog>
   </div>
 </template>
 <script>
@@ -108,6 +85,12 @@
   import Thumbnail from '../../../components/layout/Thumbnail';
   import ChildInfo from '../../../components/layout/ChildInfo';
   import { mapActions, mapState } from 'vuex';
+  // 重构组件
+  import DwDialog from '../../../components/planning/base/layout/Dialog';
+  import DwPhotoLayout from '../../../components/planning/base/photo';
+  import DwPhoto from '../../../components/planning/base/layout/Photo';
+  import DwPopupPrompt from '../../../components/planning/base/layout/PopupPrompt';
+  import DwInput from '../../../components/planning/base/input/Input';
 
   export default {
     name: 'LunchList',
@@ -150,6 +133,57 @@
         imageUrlList: [], // 多张图片url
         deleteImageUrl: '',
         sleepTemp: '',
+        // testPhotoList: [
+        //   'https://dsmm-test.oss-cn-hangzhou.aliyuncs.com/staff/28/1539331938430',
+        //   'https://dsmm-test.oss-cn-hangzhou.aliyuncs.com/staff/28/1539331938430',
+        //   'https://dsmm-test.oss-cn-hangzhou.aliyuncs.com/staff/28/1539331938430',
+        //   'https://dsmm-test.oss-cn-hangzhou.aliyuncs.com/staff/28/1539331938430',
+        //   'https://dsmm-test.oss-cn-hangzhou.aliyuncs.com/staff/28/1539331938430',
+        //   'https://dsmm-test.oss-cn-hangzhou.aliyuncs.com/staff/28/1539331938430',
+        // ],
+        popupInfo: [
+          {
+            title: '入睡时间',
+            content: '',
+            isIcon: false,
+            icon: '',
+            iconColor: '',
+            isImg: false,
+          },
+          {
+            title: '入睡方式',
+            content: '',
+            isIcon: false,
+            icon: '',
+            iconColor: '',
+            isImg: false,
+          },
+          {
+            title: '室内温度',
+            content: '',
+            isIcon: false,
+            icon: '',
+            iconColor: '',
+            isImg: false,
+          },
+          {
+            title: '备注信息',
+            content: '',
+            isIcon: false,
+            icon: '',
+            iconColor: '',
+            isImg: false,
+          },
+          {
+            title: '',
+            content: '',
+            isIcon: false,
+            icon: '',
+            iconColor: '',
+            isImg: true,
+            imgUrl: [],
+          },
+        ],
       };
     },
 //    引入子组件
@@ -159,6 +193,11 @@
       confirmation: Confirmation,
       Thumbnail,
       ChildInfo,
+      DwDialog,
+      DwPhotoLayout,
+      DwPhoto,
+      DwPopupPrompt,
+      DwInput,
     },
     computed: {
       ...mapState({
@@ -266,6 +305,11 @@
           this.$toast('请完善页面信息');
         } else {
           this.popupSleep = true;
+          this.popupInfo[0].content = this.daySleepInfoList.items.napTime ? this.daySleepInfoList.items.napTime : '11:30';
+          this.popupInfo[1].content = this.daySleepInfoList.items.modeValue ? this.daySleepInfoList.items.modeValue : '独立入睡';
+          this.popupInfo[2].content = this.daySleepInfoList.items.roomTemperature;
+          this.popupInfo[3].content = this.daySleepInfoList.memo.replace(/\r\n/g, '\n').replace(/\n/g, '\n').replace(/\s/g, '\n');
+          this.popupInfo[4].imgUrl = this.daySleepInfoList.photos;
         }
       },
       clickToConfirm(value) {
